@@ -8,16 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appcenter3.*
+import com.google.android.material.tabs.TabLayout
 
 class IngFragment : Fragment() {
 
-    private val allList: AllList by lazy {
-        ViewModelProvider(this).get(AllList::class.java)
-    }
+    private val sharedViewModel:AllList by activityViewModels()
 
     lateinit var ingadapter:IngAdapter
 
@@ -30,11 +30,21 @@ class IngFragment : Fragment() {
         val ingList:RecyclerView = rootView.findViewById(R.id.ingList)
         ingList.layoutManager = LinearLayoutManager(rootView.context)
 
-        Log.d("AllList.IngItems의 크기","${allList.IngItems.size}")
-        ingadapter = IngAdapter(allList.IngItems)
+        Log.d("AllList.IngItems의 크기","${sharedViewModel.IngItems.size}")
+        ingadapter = IngAdapter(sharedViewModel.IngItems)
         ingList.adapter = ingadapter
 
+        val viewTab : TabLayout = (activity as MainActivity).findViewById(R.id.viewTab)
+        ingList.setOnScrollListener(ScrollListener(viewTab))
         return rootView
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("IngFragment","onResume()실행됨")
+        Log.d("AllList.IngItems의 크기","${sharedViewModel.IngItems.size}")
+        ingadapter.notifyDataSetChanged()
+        Log.d("IngFragment에서 ","notifyDataSetChanged()실행됨")
     }
 
 
@@ -51,7 +61,7 @@ class IngFragment : Fragment() {
             holder.bind(Item)
             holder.itemView.setOnClickListener {
                 list.removeAt(position)
-                allList.DoneItems.add(ItemData(Item.listText,2,false))
+                sharedViewModel.addToDone(Item)
                 notifyDataSetChanged()
             }
         }
@@ -68,11 +78,4 @@ class IngFragment : Fragment() {
         Log.d("IngFragment","onPause()실행됨")
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d("IngFragment","onResume()실행됨")
-        Log.d("AllList.IngItems의 크기","${allList.IngItems.size}")
-        ingadapter.notifyDataSetChanged()
-        Log.d("IngFragment에서 ","notifyDataSetChanged()실행됨")
-    }
 }

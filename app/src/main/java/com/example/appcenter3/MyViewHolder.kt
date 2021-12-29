@@ -47,5 +47,4 @@ class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
     private fun shortenedStr(str:String):String{
         return str.substring(0,24) + "..."
     }
-
 }

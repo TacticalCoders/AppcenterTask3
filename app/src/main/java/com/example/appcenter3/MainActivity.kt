@@ -16,8 +16,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity(){
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,33 +24,10 @@ class MainActivity : AppCompatActivity(){
         val viewPager:ViewPager2 = findViewById(R.id.viewPager)
         val pagerAdapter = PagerAdapter(this)
         viewPager.adapter = pagerAdapter
-        viewPager.registerOnPageChangeCallback(pageChangeCallback)
 
         val tabTitles = listOf<String>("시작 전", "진행 중", "완료")
         TabLayoutMediator(viewTab, viewPager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
     }
-
-    private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
-        override fun onPageScrollStateChanged(state: Int) {
-            super.onPageScrollStateChanged(state)
-            Log.w("$$$0 ", "$state")
-            IngFragment()
-        }
-
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-            Log.w("$$$1 ", "$position")
-
-            //Log.w("$$$2 ", "$positionOffset")
-            //Log.w("$$$3 ", "$positionOffsetPixels")
-        }
-
-        override fun onPageSelected(position: Int) {
-            super.onPageSelected(position)
-            Log.w("$$$4 ", "$position")
-        }
-    }
-
 }
