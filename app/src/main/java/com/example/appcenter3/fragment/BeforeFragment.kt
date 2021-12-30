@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appcenter3.*
+import com.example.appcenter3.sharedPreferences.MyApplication
 import com.google.android.material.tabs.TabLayout
 
 
@@ -27,6 +28,13 @@ class BeforeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         Log.d("BeforeFragment","객체 생성됨")
+        //MyApplication.beforeprefs에서 데이터 가져오기.
+        Log.d("BeforeFragment","MyApplication.beforeprefs.isFirst()는 ${MyApplication.beforeprefs.isFirst()}")
+        if(!MyApplication.beforeprefs.isFirst()){
+            getData()
+            Log.d("BeforeFragment에서 ","getData()실행됨")
+        }
+
 
         val rootView = inflater.inflate(R.layout.fragment_before, container, false)
         val beforeList:RecyclerView = rootView.findViewById(R.id.beforeList)
@@ -43,6 +51,12 @@ class BeforeFragment : Fragment() {
         return rootView
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("BeforeFragment에서 ","onDestroy()실행됨")
+        //MyApplication.beforeprefs에 데이터 저장.
+        setData()
+    }
 
     inner class BeforeAdapter(val list: MutableList<ItemData>) : RecyclerView.Adapter<MyViewHolder>(){
 
@@ -76,7 +90,25 @@ class BeforeFragment : Fragment() {
     }
 
 
+    fun setData(){
+        MyApplication.beforeprefs.clearAll() //기존의 데이터 모두 삭제.
+        for(i in 1..sharedViewModel.BeforeItems.size-1){ //현재 뷰 모델에 있는 데이터로 갱신.
+            MyApplication.beforeprefs.setText(i,sharedViewModel.BeforeItems[i-1].listText)
+            MyApplication.beforeprefs.setState(i,sharedViewModel.BeforeItems[i-1].state)
+            MyApplication.beforeprefs.setLastItem(i,sharedViewModel.BeforeItems[i-1].isLastItme)
+            MyApplication.beforeprefs.saved(i)
+        }
+        Log.d("BeforeFragment에서 ","setData()실행됨")
+    }
 
-
+    fun getData(){
+        for (i in 1..MyApplication.beforeprefs.getSize()){ //프리퍼런스에 있는 데이터 가져오기.
+            var text:String = MyApplication.beforeprefs.getText(i)!!
+            var state:Int = MyApplication.beforeprefs.getState(i)!!
+            var isLast:Boolean = MyApplication.beforeprefs.getLastItem(i)!!
+            sharedViewModel.BeforeItems.add(ItemData(text,state,isLast))
+            Log.d("BeforeFragment에서 ","getData()실행됨")
+        }
+    }
 
 }

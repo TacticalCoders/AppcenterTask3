@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appcenter3.*
+import com.example.appcenter3.sharedPreferences.MyApplication
 import com.google.android.material.tabs.TabLayout
 
 class IngFragment : Fragment() {
@@ -26,6 +27,14 @@ class IngFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         Log.d("IngFragment","객체 생성됨")
+
+        //MyApplication.ingprefs에서 데이터 가져오기.
+        Log.d("IngFragment ","MyApplication.ingprefs.isFirst()는 ${MyApplication.ingprefs.isFirst()}")
+        if(!MyApplication.ingprefs.isFirst()){
+            getData()
+            Log.d("IngFragment ","getData()실행됨")
+        }
+
         val rootView = inflater.inflate(R.layout.fragment_ing, container, false)
         val ingList:RecyclerView = rootView.findViewById(R.id.ingList)
         ingList.layoutManager = LinearLayoutManager(rootView.context)
@@ -47,6 +56,12 @@ class IngFragment : Fragment() {
         Log.d("IngFragment에서 ","notifyDataSetChanged()실행됨")
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("IngFragment에서 ","onDestroy()실행됨")
+        //MyApplication.ingprefs에 데이터 저장.
+        setData()
+    }
 
     inner class IngAdapter(var list: MutableList<ItemData>) : RecyclerView.Adapter<MyViewHolder>(){
 
@@ -68,14 +83,26 @@ class IngFragment : Fragment() {
         override fun getItemCount(): Int = list.size
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.d("IngFragment","onStart()실행됨")
+
+    fun setData(){
+        MyApplication.ingprefs.clearAll() //기존의 데이터 모두 삭제.
+        for(i in 1..sharedViewModel.IngItems.size){ //현재 뷰 모델에 있는 데이터로 갱신.
+            MyApplication.ingprefs.setText(i,sharedViewModel.IngItems[i-1].listText)
+            MyApplication.ingprefs.setState(i,sharedViewModel.IngItems[i-1].state)
+            MyApplication.ingprefs.setLastItem(i,sharedViewModel.IngItems[i-1].isLastItme)
+            MyApplication.ingprefs.saved(i)
+        }
+        Log.d("BeforeFragment에서 ","setData()실행됨")
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d("IngFragment","onPause()실행됨")
+    fun getData(){
+        for (i in 1..MyApplication.ingprefs.getSize()){ //프리퍼런스에 있는 데이터 가져오기.
+            var text:String = MyApplication.ingprefs.getText(i)!!
+            var state:Int = MyApplication.ingprefs.getState(i)!!
+            var isLast:Boolean = MyApplication.ingprefs.getLastItem(i)!!
+            sharedViewModel.IngItems.add(ItemData(text,state,isLast))
+            Log.d("BeforeFragment에서 ","getData()실행됨")
+        }
     }
 
 }

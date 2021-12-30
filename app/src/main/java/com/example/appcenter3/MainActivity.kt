@@ -30,4 +30,5 @@ class MainActivity : AppCompatActivity(){
             tab.text = tabTitles[position]
         }.attach()
     }
+
 }
