@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -72,9 +73,12 @@ class IngFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+
+            val imageView = holder.itemView.findViewById<ImageView>(R.id.iv_listImg)
+
             val Item = list[position]
             holder.bind(Item)
-            holder.itemView.setOnClickListener {
+            imageView.setOnClickListener {
                 list.removeAt(position)
                 sharedViewModel.addToDone(Item)
                 notifyDataSetChanged()
@@ -93,6 +97,8 @@ class IngFragment : Fragment() {
             MyApplication.ingprefs.saved(i)
         }
         Log.d("BeforeFragment에서 ","setData()실행됨")
+        sharedViewModel.IngItems.clear()
+        Log.d("sharedViewModel.IngItems ","모든 항목 삭제됨")
     }
 
     fun getData(){

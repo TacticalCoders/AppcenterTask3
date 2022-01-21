@@ -32,7 +32,7 @@ class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
     private fun setItem(item:ItemData){
         //텍스트 세팅 길어지는 부분은 ...으로 표시. 텍스트 자르고 ... 붙이기.
-        if(item.listText.length > 24) tv_listText.text = shortenedStr(item.listText)
+        if(item.listText.length >= 21) tv_listText.text = shortenedStr(item.listText)
         else tv_listText.text = item.listText
 
         tv_listText.setBackgroundResource(0)
@@ -45,6 +45,6 @@ class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
     }
 
     private fun shortenedStr(str:String):String{
-        return str.substring(0,24) + "..."
+        return str.substring(0,20) + "..."
     }
 }

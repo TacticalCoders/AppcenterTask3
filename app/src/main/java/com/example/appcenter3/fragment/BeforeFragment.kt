@@ -1,14 +1,11 @@
 package com.example.appcenter3.fragment
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.NonNull
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.Fragment
+import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +13,7 @@ import com.example.appcenter3.*
 import com.example.appcenter3.sharedPreferences.MyApplication
 import com.google.android.material.tabs.TabLayout
 
-
-class BeforeFragment : Fragment() {
+class BeforeFragment : androidx.fragment.app.Fragment() {
 
     private val sharedViewModel:AllList by activityViewModels()
 
@@ -67,9 +63,12 @@ class BeforeFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+
+            val imageView = holder.itemView.findViewById<ImageView>(R.id.iv_listImg)
             val Item = list[position]
             holder.bind(Item)
-            holder.itemView.setOnClickListener {
+
+            imageView.setOnClickListener {
                 if(Item.isLastItme){ //사용자로부터 텍스트를 입력받아 새로운 할 일 추가.
                     var newText:String=""
                     val newItemDialog = NewItemDialog(R.layout.dialog,list,Item,beforeadapter)
@@ -99,6 +98,8 @@ class BeforeFragment : Fragment() {
             MyApplication.beforeprefs.saved(i)
         }
         Log.d("BeforeFragment에서 ","setData()실행됨")
+        sharedViewModel.BeforeItems.clear()
+        Log.d("sharedViewModel.BeforeItems ","모든 항목 삭제됨")
     }
 
     fun getData(){
