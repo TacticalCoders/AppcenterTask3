@@ -19,7 +19,7 @@
             android:layout_margin="11dp"
             android:layout_gravity="center"
             android:text="안드로이드 파트장님께 만원주기"
-            android:textColor="@color/black"
+            android:textColor="?android:textColorPrimary"
             android:textSize="15sp" />
 
         <ImageView
